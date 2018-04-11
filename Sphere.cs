@@ -1,6 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
+/***************************************************************************************
+*    Title: None - Question Title: "Normalizing several meshes towards a sphere"
+*    Author: Bunny83
+*    Creation Date: Oct 7, 2015
+*    Code version: 1.0
+*    Availability: https://answers.unity.com/questions/1077976/normalizing-several-meshes-towards-a-sphere.html?childToView=1078038#answer-1078038
+*
+***************************************************************************************/  
 public struct PatchConfig
 {
     public string name;
@@ -35,26 +43,34 @@ public class Sphere : MonoBehaviour
     public int xVertCount = 250;
     public int yVertCount = 250;
     public float radius = 5f;
+    public Material patchMaterial;
+    
+    
+    
     public float seed;
     public float scale;
     public int octaves;
     public float persistance;
     public float lacunarity;
-
-    public Material patchMaterial;
-
     public Color[] regions;
     public float[] heights;
     public AnimationCurve heightCurve;
-
     public GameObject ore;
     public float oreSeed;
     public float oreScale;
 
-    void Start()
-    {
-         //GeneratePatches();
-    }
+    
+    
+    
+/***************************************************************************************
+*    Title: Easy 3D Noise
+*    Author: Carlpilot
+*    Creation Date: Jan 3, 2017
+*    Code version: 1.0
+*    Availability: https://www.youtube.com/watch?v=Aga0TBJkchM
+*
+***************************************************************************************/  
+    
     public static float Perlin3d(float x, float y, float z)
     {
         float AB = Mathf.PerlinNoise(x, y);
@@ -70,22 +86,25 @@ public class Sphere : MonoBehaviour
         return ABC / 6f;
     }
    
+    
+    
+    
+    
+    
+/***************************************************************************************
+*    Title: None - Question Title: "Normalizing several meshes towards a sphere"
+*    Author: Bunny83
+*    Creation Date: Oct 7, 2015
+*    Code version: 1.0
+*    Availability: https://answers.unity.com/questions/1077976/normalizing-several-meshes-towards-a-sphere.html?childToView=1078038#answer-1078038
+*
+***************************************************************************************/  
 
     public void GeneratePatch(PatchConfig aConf, int u, int v)
     {
         GameObject patch = new GameObject(aConf.name + "_" + u + v);
         MeshFilter mf = patch.AddComponent<MeshFilter>();
         MeshRenderer rend = patch.AddComponent<MeshRenderer>();
-
-        patch.AddComponent<SectionTexture>();
-        if (transform.name == "clouds2 Inversed")
-        {
-            patch.AddComponent<ReverseNormals>();
-        }
-
-
-
-
         rend.sharedMaterial = patchMaterial;
         Mesh m = mf.sharedMesh = new Mesh();
         patch.transform.parent = transform;
@@ -99,7 +118,7 @@ public class Sphere : MonoBehaviour
         Vector2[] uvs = new Vector2[vertices.Length];
 
         Texture2D tex = new Texture2D(xVertCount,yVertCount);
-
+        patch.AddComponent<SectionTexture>();
         float minNoiseHeight = float.MaxValue+.1f;
         float maxNoiseHeight = float.MinValue;
 
@@ -107,7 +126,12 @@ public class Sphere : MonoBehaviour
         {
             for (int x = 0; x < xVertCount; x++)
             {
-
+                
+                
+                
+                
+                
+//Developed by Nicholas Karalis \/\/\/\/\/\/
                 int i = x + y * xVertCount;
                 Vector2 p = offset + new Vector2(x * step.x, y * step.y);
                 uvs[i] = p + Vector2.one * 0.5f;
@@ -160,35 +184,6 @@ public class Sphere : MonoBehaviour
                 vec = vec * (1.0f + (heightCurve.Evaluate(noiseHeight/range)));
                 float currentHeight = noiseHeight/range;
                 float oreCurrentHeight = oreHeight / range;
-                //Creating Ores//
-                if (transform.name == "CubeSphere")
-                {
-                    if (oreCurrentHeight> .945f)
-                    {
-                        GameObject Iron = Instantiate(ore,transform.localPosition+( vec*radius), Quaternion.identity);
-                        Iron.transform.name = "Iron";
-                        Iron.GetComponent<Renderer>().material.color = Color.gray;
-                    }
-                    if (oreCurrentHeight < .52f)
-                    {
-                        GameObject Copper = Instantiate(ore, transform.localPosition + (vec * radius), Quaternion.identity);
-                        Copper.transform.name = "Copper";
-                        Copper.GetComponent<Renderer>().material.color = Color.red;
-                    }
-                    if (oreCurrentHeight < .75f && oreCurrentHeight > .7499f)
-                    {
-                        GameObject Aluminum = Instantiate(ore, transform.localPosition + (vec * radius), Quaternion.identity);
-                        Aluminum.transform.name = "Aluminum";
-                        Aluminum.GetComponent<Renderer>().material.color = Color.green;
-                    }
-                    if (oreCurrentHeight < .65f && oreCurrentHeight > .64999f)
-                    {
-                        GameObject Titanium = Instantiate(ore, transform.localPosition + (vec * radius), Quaternion.identity);
-                        Titanium.transform.name = "Titanium";
-                        Titanium.GetComponent<Renderer>().material.color = Color.yellow;
-                    }
-                }
-
 
                 normals[i] = vec;
                 vertices[i] = vec * radius;
@@ -213,11 +208,22 @@ public class Sphere : MonoBehaviour
             }
         }
         tex.Apply();
-        //tex.alphaIsTransparency = true;
         patch.GetComponent<Renderer>().material.mainTexture = tex;
         patch.GetComponent<SectionTexture>().tex = tex;
         
-
+//Developed by Nicholas Karalis ^^^^^^
+        
+        
+        
+        
+/***************************************************************************************
+*    Title: None - Question Title: "Normalizing several meshes towards a sphere"
+*    Author: Bunny83
+*    Creation Date: Oct 7, 2015
+*    Code version: 1.0
+*    Availability: https://answers.unity.com/questions/1077976/normalizing-several-meshes-towards-a-sphere.html?childToView=1078038#answer-1078038
+*
+***************************************************************************************/        
         int[] indices = new int[(xVertCount - 1) * (yVertCount - 1) * 4];
         for (int y = 0; y < yVertCount - 1; y++)
         {
@@ -235,7 +241,6 @@ public class Sphere : MonoBehaviour
         m.uv = uvs;
         m.SetIndices(indices, MeshTopology.Quads, 0);
         m.RecalculateBounds();
-
         mf.sharedMesh.SetTriangles(mf.sharedMesh.GetTriangles(0), 0);
 
 
