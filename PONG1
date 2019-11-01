@@ -1,0 +1,76 @@
+import pygame
+import math
+pygame.init()
+gameDisplay=pygame.display.set_mode((800,600))
+pygame.display.set_caption('PONG')
+pygame.display.update()
+
+gameExit = False
+player1Y = 300
+player2Y = 300
+
+white = (255,255,255)
+black = (0,0,0)
+red = (255,0,0)
+
+ballX = 400
+ballY = 300
+ballstate = 1
+
+while not gameExit:
+    print (ballX)
+    print (math.hypot(5-ballX, player1Y-ballY))
+    if ballstate == 0:
+        ballX += .1
+    if ballstate == 1:
+        ballX -= .1
+    if ballstate == 2:
+        ballX += .1
+        ballY += .1
+    if ballstate == 3:
+        ballX += .1
+        ballY -= .1
+    if ballstate == 4:
+        ballX -= .1
+        ballY -= .1
+    if ballstate == 5:
+        ballX -= .1
+        ballY += .1
+    if ballX <= 5:
+        if math.hypot(5-ballX, (player1Y+50)-ballY):
+            if ballstate == 1:
+                ballstate = 0
+    if ballX >= 785:
+        if math.hypot(785-ballX, (player2Y+50)-ballY):
+            if ballstate == 0:
+                ballstate = 1
+    for event in pygame.event.get():
+
+
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_w:
+                print("w")
+                if player1Y > 0:
+                    player1Y -=10
+            if event.key == pygame.K_s:
+                print("s")
+                if player1Y < 500:
+                    player1Y +=10
+            if event.key == pygame.K_UP:
+                if player2Y > 0:
+                    player2Y -= 10
+            if event.key == pygame.K_DOWN:
+                if player2Y < 500:
+                    player2Y += 10
+        if event.type == pygame.QUIT:
+            gameExit = True
+    gameDisplay.fill(black)
+    pygame.draw.rect(gameDisplay,white,[5,player1Y,10,100])
+
+    pygame.draw.rect(gameDisplay, white, [785, player2Y, 10, 100])
+    pygame.draw.rect(gameDisplay, white, [ballX, ballY, 10, 10])
+    pygame.display.update()
+
+pygame.quit()
+quit()
